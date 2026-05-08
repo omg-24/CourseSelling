@@ -15,8 +15,6 @@ app.use('/user',userRouter)
 app.use('/admin',adminRouter)
 app.use('/course',courseRouter)
 
-createUserRoutes(app)
-createCourseRoutes(app)
 
 
 
