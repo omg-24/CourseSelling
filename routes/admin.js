@@ -4,6 +4,7 @@ const adminRouter = Router()
 const {adminModel, courseModel} = require("../db")
 const jwt = require("jsonwebtoken")
 const { adminmiddleware } = require("../middleware/admin")
+const admin = require("../middleware/admin")
 require("dotenv").config()
 const JWT_ADMIN_PASSWORD = process.env.JWT_ADMIN_PASSWORD
 
@@ -79,12 +80,31 @@ adminRouter.post('/course',adminmiddleware, async function (req,res){
 
 })
 
-adminRouter.put('/course', (req,res)=>{
+adminRouter.put('/course',adminmiddleware, async function(req,res){
+    const adminId = req.userId
+    const { title,description,imageUrl,price,courseId } = req.body
 
+    await courseModel.updateOne({
+         _id: courseId,
+         creatorId:adminId
+        },{
+            title,
+            description,
+            imageUrl,
+            price
+    })
+    res.json({
+        message: "Course Updated"
+    })
 })
 
-adminRouter.get('/course/bulk', (req,res)=>{
+adminRouter.get('/course/bulk',adminmiddleware, async function (req,res){
+    const adminId = req.userId
+    const allcourse = await courseModel.find({creatorId:adminId})
 
+    res.json({
+        allcourse
+    })
 })
 
 module.exports = {
